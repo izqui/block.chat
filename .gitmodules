@@ -1,4 +1,4 @@
 [submodule "protocol"]
-	path = protocol
+	path = imports/lib/protocol
 	url = git@github.com:izqui/block.chat-protocol.git
 	branch = master

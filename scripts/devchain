@@ -1,0 +1,3 @@
+#!/bin/bash
+
+geth --dev --ipcpath "/Users/jorge/Library/Ethereum/geth.ipc" --rpc --rpccorsdomain "http://localhost:3000" --password scripts/password.txt --unlock "0x456CDBb2a54f24d1BdCeA2603e23Aabf09d96f51" --targetgaslimit 10000000 js scripts/mine
