@@ -1,4 +1,5 @@
 import web3 from './web3';
+import keys from './keys';
 
 if(location.hostname !== 'localhost' && location.hostname !== '127.0.0.1')
     Meteor.disconnect();
@@ -9,6 +10,7 @@ connectToNode = function(){
 
     EthAccounts.init();
     EthBlocks.init();
+    keys.generateKeyPair('izqui', EthAccounts.findOne().address);
 
     console.timeEnd('startNode');
 };
