@@ -1,12 +1,13 @@
 <template name="layout_main">
 	<div class="dapp-grid"></div>
+	<!--
 	<header class="dapp-header {{#if isMistMode}} dapp-full-header {{/if}}">
 		{{> Template.dynamic template=header}}
 	</header>
-
+	-->
 	<div class="dapp-flex-content">
 		<!-- content -->
-		<main class="dapp-content">
+		<main class="full-width dapp-content">
 			{{> Template.dynamic template=main data=data}}
 		</main>
 

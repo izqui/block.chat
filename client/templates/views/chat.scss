@@ -18,7 +18,7 @@ $gray: #92959E;
 
 .chat-container {
   margin: 0 auto;
-  width: 750px;
+  width: 90vw;
   background: #444753;
   border-radius: 5px;
 
@@ -28,9 +28,9 @@ $gray: #92959E;
 }
 
 .people-list {
-  width:260px;
+  width: 30vw;
   float: left;
-  
+
   .search {
     padding: 20px;
   }
@@ -52,10 +52,7 @@ $gray: #92959E;
 
   ul {
     padding: 20px;
-    height: 770px;
-
-
-
+    height: 90vh;
 
     li {
       padding-bottom: 20px;
@@ -82,7 +79,7 @@ $gray: #92959E;
 }
 
 .chat {
-  width: 490px;
+  width: 60vw;
   float:left;
   background: #F2F5F8;
   border-top-right-radius: 5px;
