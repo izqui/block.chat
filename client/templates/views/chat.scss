@@ -9,24 +9,28 @@ $gray: #92959E;
   box-sizing: border-box;
 }
 
-body {
+.dapp-content {
   background: #C5DDEB;
   font: 14px/20px "Lato", Arial, sans-serif;
   padding: 40px 0;
   color: white;
 }
 
-.container {
+.chat-container {
   margin: 0 auto;
   width: 750px;
   background: #444753;
   border-radius: 5px;
+
+  ul {
+    list-style-type: none;
+  }
 }
 
 .people-list {
   width:260px;
   float: left;
-
+  
   .search {
     padding: 20px;
   }
