@@ -2,9 +2,6 @@ import kbpgp from '/imports/lib/kbpgp';
 import {KeyStorePromise} from './deployed';
 import web3 from './web3';
 
-ConversationCollection = new Mongo.Collection('bc_conversations', {connection: null});
-export const Conversations = ConversationCollection;
-
 class KeyManager {
   constructor() {
     KeyStorePromise.then((ks) => this.keyStore = ks);

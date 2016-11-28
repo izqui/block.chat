@@ -1,7 +1,8 @@
 import {BlockChat, MessageStorePromise} from './deployed';
-import {Conversations, keyManager as keys} from './keys';
+import {keyManager as keys} from './keys';
 
 MessageCollection = new Mongo.Collection('bc_messages', {connection: null});
+ConversationCollection = new Mongo.Collection('bc_conversations', {connection: null});
 
 class MessagesManager {
   constructor(address) {
@@ -62,10 +63,14 @@ class MessagesManager {
         if (hash != hash)
           throw new Error("Unexpected message hash");
 
-        var promisedMessage = {sender: sender, payload: keys.decryptPayload(payload, this.address), timestamp: timestamp}
+        var promisedMessage = {sender: sender, payload: keys.decryptPayload(payload, this.address), timestamp: timestamp.valueOf()}
         return Promise.allProperties(promisedMessage);
       })
       .then((message) => {
+        var _id = CryptoJS.SHA256(message.payload+message.sender+message.timestamp).toString();
+        MessageCollection.upsert(`m_${_id}`, message);
+        ConversationCollection.upsert(`c_${message.sender}`, {address: message.sender, lastMessage: message.timestamp});
+
         console.log('received message', message);
       })
   }
@@ -89,3 +94,4 @@ class MessagesManager {
 
 export const Messages = MessageCollection;
 export const MessageManager = MessagesManager;
+export const Conversations = ConversationCollection;
