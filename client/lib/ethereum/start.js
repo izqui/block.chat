@@ -1,8 +1,11 @@
 import web3 from './web3';
-import keys from './keys';
+import {keyManager as keys} from './keys';
+import {MessageManager} from './messages';
 
 if(location.hostname !== 'localhost' && location.hostname !== '127.0.0.1')
     Meteor.disconnect();
+
+this.M = new MessageManager(Session.get('selectedAddress'));
 
 connectToNode = function(){
     console.time('startNode')
@@ -11,8 +14,23 @@ connectToNode = function(){
     EthAccounts.init();
     EthBlocks.init();
 
-    keys.generateKeyPair('izqui', EthAccounts.findOne().address)
-      .then(() => console.log('keypair generated'));
+    if (!Session.get('selectedAddress'))
+      Session.setPersistent('selectedAddress', Random.choice(EthAccounts.find().fetch()).address)
+
+    var selectedAddress = Session.get('selectedAddress');
+    var username = FlowRouter.getQueryParam('username');
+
+    keys.checkPublicKeyForAddress(selectedAddress)
+      .then((isKeyRegistered) => {
+        if (isKeyRegistered) {
+          console.log('already got keys', selectedAddress)
+
+        } else {
+          console.log('generating keys for', selectedAddress, username)
+          keys.generateKeyPair(username, selectedAddress)
+            .then(() => console.log('keypair generated'));
+        }
+      });
 
     console.timeEnd('startNode');
 };

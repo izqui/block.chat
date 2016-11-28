@@ -59,7 +59,7 @@ $gray: #92959E;
     }
   }
 
-  img {
+  .avatar {
     float: left;
   }
 
@@ -119,10 +119,10 @@ $gray: #92959E;
   }
 
   .chat-history {
-    padding: 30px 30px 20px;
+    padding: 30px 30px 20px 0px;
     border-bottom: 2px solid white;
     overflow-y: scroll;
-    height: 575px;
+    height: 70vh;
 
     .message-data {
       margin-bottom: 15px;

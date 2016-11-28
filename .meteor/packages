@@ -45,3 +45,5 @@ frozeman:persistent-minimongo
 fourseven:scss
 fortawesome:fontawesome
 extremeandy:es6-promisify
+random
+jparker:crypto-sha256
