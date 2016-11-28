@@ -10,7 +10,9 @@ connectToNode = function(){
 
     EthAccounts.init();
     EthBlocks.init();
-    keys.generateKeyPair('izqui', EthAccounts.findOne().address);
+
+    keys.generateKeyPair('izqui', EthAccounts.findOne().address)
+      .then(() => console.log('keypair generated'));
 
     console.timeEnd('startNode');
 };
