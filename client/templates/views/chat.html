@@ -10,12 +10,11 @@
       <button class="fa fa-cog"></button>
     </div>
     <ul class="list">
-      {{#each conversation}}
-      <li class="clearfix">
-        {{> dapp_identicon identity=conversation.address class="dapp-medium avatar" }}
-
+      {{#each conversations}}
+      <li class="conversationItem {{#if isSelected _id }} selected {{/if}} clearfix" data-id="{{_id}}">
+        {{> dapp_identicon identity=address class="dapp-small avatar" }}
         <div class="about">
-          <div class="name">{{ conversationId this }}</div>
+          <div class="name">{{ address }}</div>
           <div class="status">
             <i class="fa fa-circle online"></i>
           </div>
@@ -24,52 +23,44 @@
       {{/each}}
     </ul>
   </div>
-
-  <div class="chat">
+  {{#with selectedConversation}}
+  <div class="chat" style="{{#unless this}} visibility: hidden {{/unless}}">
     <div class="chat-header clearfix">
-      <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_01_green.jpg" alt="avatar" />
+      {{> dapp_identicon identity=address class="dapp-small avatar" }}
 
       <div class="chat-about">
-        <div class="chat-with">Chat with Vincent Porter</div>
-        <div class="chat-num-messages">already 1 902 messages</div>
+        <div class="chat-with">Chat with {{address}}</div>
+        <div class="chat-num-messages">{{messageCount _id}} messages</div>
       </div>
       <i class="fa fa-star"></i>
     </div> <!-- end chat-header -->
 
     <div class="chat-history">
       <ul>
-        <li class="clearfix">
-          <div class="message-data align-right">
-            <span class="message-data-time" >10:10 AM, Today</span> &nbsp; &nbsp;
-            <span class="message-data-name" >Olia</span> <i class="fa fa-circle me"></i>
+        {{#each messages _id }}
+        {{#if incoming}}
+          <li>
+            <div class="message-data">
+              <span class="message-data-name"><i class="fa fa-circle online"></i> {{sender}}</span>
+              <span class="message-data-time">{{timestamp}}</span>
+            </div>
+            <div class="message my-message">
+              {{payload}}
+            </div>
+          </li>
+        {{else}}
+          <li class="clearfix">
+            <div class="message-data align-right">
+              <span class="message-data-time" >{{timestamp}}</span> &nbsp; &nbsp;
+              <span class="message-data-name" >me</span> <i class="fa fa-circle me"></i>
 
-          </div>
-          <div class="message other-message float-right">
-            Hi Vincent, how are you? How is the project coming along?
-          </div>
-        </li>
-
-        <li>
-          <div class="message-data">
-            <span class="message-data-name"><i class="fa fa-circle online"></i> Vincent</span>
-            <span class="message-data-time">10:12 AM, Today</span>
-          </div>
-          <div class="message my-message">
-            Are we meeting today? Project has been already finished and I have results to show you.
-          </div>
-        </li>
-
-        <li class="clearfix">
-          <div class="message-data align-right">
-            <span class="message-data-time" >10:14 AM, Today</span> &nbsp; &nbsp;
-            <span class="message-data-name" >Olia</span> <i class="fa fa-circle me"></i>
-
-          </div>
-          <div class="message other-message float-right">
-            Well I am not sure. The rest of the team is not here yet. Maybe in an hour or so? Have you faced any problems at the last phase of the project?
-          </div>
-        </li>
-
+            </div>
+            <div class="message other-message float-right">
+              {{payload}}
+            </div>
+          </li>
+        {{/if}}
+        {{/each}}
       </ul>
 
     </div> <!-- end chat-history -->
@@ -77,12 +68,12 @@
     <div class="chat-message clearfix">
       <textarea name="message-to-send" id="message-to-send" placeholder ="Type your message" rows="3"></textarea>
 
-      <button>Send</button>
+      <button class="sendMessage">Send</button>
 
     </div> <!-- end chat-message -->
 
   </div> <!-- end chat -->
-
+  {{/with}}
 </div> <!-- end container -->
 
 </template>

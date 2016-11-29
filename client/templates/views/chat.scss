@@ -35,6 +35,14 @@ $gray: #92959E;
     padding: 20px;
   }
 
+  .conversationItem {
+    cursor: pointer;
+  }
+
+  .conversationItem.selected {
+    background: rgba(0,0,0,0.3);
+  }
+
   input {
     border-radius: 3px;
     border: none;

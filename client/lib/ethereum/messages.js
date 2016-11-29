@@ -4,6 +4,11 @@ import {keyManager as keys} from './keys';
 MessageCollection = new Mongo.Collection('bc_messages', {connection: null});
 ConversationCollection = new Mongo.Collection('bc_conversations', {connection: null});
 
+if(typeof PersistentMinimongo !== 'undefined') {
+  new PersistentMinimongo(MessageCollection);
+  new PersistentMinimongo(ConversationCollection);
+}
+
 class MessagesManager {
   constructor(address) {
     this.address = address;
@@ -14,17 +19,21 @@ class MessagesManager {
 
   sendMessage(recipient, payload) {
     var address;
-    keys.getAddressForRecipient(recipient)
+    var timestamp;
+    return keys.getAddressForRecipient(recipient)
       .then((a) => {
         address = a;
         return keys.encryptPayload(address, payload)
       })
       .then((encrypted) => {
-        const timestamp = Math.floor(+new Date()/1000);
+        timestamp = Math.floor(+new Date()/1000);
         const hash = this.recipientHash(timestamp, address);
 
         return BlockChat.sendMessage(encrypted, timestamp, hash, {from: this.address, gas: 1000000});
       })
+      .then(() => {
+        return this.saveMessage({sender: this.address, recipient: address, payload: payload, timestamp: timestamp});
+      });
   }
 
   reloadMessageFilter(addedConversation) {
@@ -63,16 +72,27 @@ class MessagesManager {
         if (hash != hash)
           throw new Error("Unexpected message hash");
 
-        var promisedMessage = {sender: sender, payload: keys.decryptPayload(payload, this.address), timestamp: timestamp.valueOf()}
+        var promisedMessage = {
+            payload: keys.decryptPayload(payload, this.address),
+            sender: sender,
+            recipient: this.address,
+            timestamp: parseInt(timestamp.valueOf())}
+
         return Promise.allProperties(promisedMessage);
       })
-      .then((message) => {
-        var _id = CryptoJS.SHA256(message.payload+message.sender+message.timestamp).toString();
-        MessageCollection.upsert(`m_${_id}`, message);
-        ConversationCollection.upsert(`c_${message.sender}`, {address: message.sender, lastMessage: message.timestamp});
+      .then((m) => this.saveMessage(m));
+  }
 
-        console.log('received message', message);
-      })
+  saveMessage(message) {
+    var _id = CryptoJS.SHA256(message.payload+message.sender+message.timestamp).toString();
+
+    message.incoming = message.recipient == this.address;
+    const conv = message.incoming ? message.sender : message.recipient;
+    message.conversationId = `c_${conv}`;
+
+    MessageCollection.upsert(`m_${_id}`, message);
+    ConversationCollection.upsert(message.conversationId, {address: conv, lastMessage: message.timestamp});
+    return Promise.resolve();
   }
 
   get lastBlockKey() {

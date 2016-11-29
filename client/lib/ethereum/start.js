@@ -1,11 +1,8 @@
 import web3 from './web3';
 import {keyManager as keys} from './keys';
-import {MessageManager} from './messages';
 
 if(location.hostname !== 'localhost' && location.hostname !== '127.0.0.1')
     Meteor.disconnect();
-
-this.M = new MessageManager(Session.get('selectedAddress'));
 
 connectToNode = function(){
     console.time('startNode')
@@ -22,11 +19,10 @@ connectToNode = function(){
 
     keys.checkPublicKeyForAddress(selectedAddress)
       .then((isKeyRegistered) => {
-        if (isKeyRegistered) {
-          console.log('already got keys', selectedAddress)
-
-        } else {
-          console.log('generating keys for', selectedAddress, username)
+        if (!isKeyRegistered) {
+          localStorage.clear();
+          Session.setPersistent('selectedAddress', selectedAddress)
+          console.log('generating keys for', selectedAddress, username);
           keys.generateKeyPair(username, selectedAddress)
             .then(() => console.log('keypair generated'));
         }
